@@ -1,6 +1,5 @@
 package com.app.todojpa.dtos;
 
-import com.app.todojpa.roles.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

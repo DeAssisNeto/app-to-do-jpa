@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class AuthorizationService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
-    public UserDetails saveUser(RegisterRecordDto dto, String password){
+    public UserDetails save(RegisterRecordDto dto, String password){
         return userRepository.save(new UserModel(dto, password));
     }
 
@@ -25,4 +25,5 @@ public class AuthorizationService implements UserDetailsService {
     public UserDetails findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
 }

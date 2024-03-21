@@ -3,7 +3,9 @@ package com.app.todojpa.controllers;
 
 import com.app.todojpa.dtos.AuthenticationRecordDto;
 import com.app.todojpa.dtos.RegisterRecordDto;
+import com.app.todojpa.models.UserModel;
 import com.app.todojpa.services.AuthorizationService;
+import com.app.todojpa.services.TokenService;
 import com.app.todojpa.utils.ApiGlobalRecordDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +21,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
     @Autowired
-    AuthenticationManager authenticationManager;
+    private TokenService tokenService;
     @Autowired
-    AuthorizationService authorizationService;
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationRecordDto dto){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
+    public ResponseEntity<ApiGlobalRecordDto> login(@RequestBody @Valid AuthenticationRecordDto dto){
+        var usernamePassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
         var auth = authenticationManager.authenticate(usernamePassword);
 
-        return ResponseEntity.status(HttpStatus.OK).build();
+        var token = tokenService.generateToken((UserModel) auth.getPrincipal());
 
-
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalRecordDto(token));
     }
 
     @PostMapping("/register")
@@ -45,7 +49,7 @@ public class AuthenticationController {
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
 
-        var newUser = authorizationService.saveUser(dto, encryptedPassword);
+        var newUser = authorizationService.save(dto, encryptedPassword);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiGlobalRecordDto(newUser));
     }
 
