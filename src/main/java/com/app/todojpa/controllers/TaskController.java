@@ -26,4 +26,10 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiGlobalResponseDto(newTask));
     }
 
+    @GetMapping
+    public ResponseEntity<ApiGlobalResponseDto> getAllTask(){
+        var listTask = taskService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalResponseDto(listTask));
+    }
+
 }

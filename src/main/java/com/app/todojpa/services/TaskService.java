@@ -7,6 +7,9 @@ import com.app.todojpa.repositories.UserRepository;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -14,8 +17,13 @@ public class TaskService {
     TaskRepository taskRepository;
     @Autowired
     UserRepository userRepository;
-    public TaskModel save(TaskRecordDto dto, DecodedJWT token){
 
+    @Transactional
+    public TaskModel save(TaskRecordDto dto, DecodedJWT token){
         return taskRepository.save(new TaskModel(dto, userRepository.findByEmail(token.getSubject())));
+    }
+
+    public List<TaskModel> getAll(){
+        return taskRepository.findAll();
     }
 }
