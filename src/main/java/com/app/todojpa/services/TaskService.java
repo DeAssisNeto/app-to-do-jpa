@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TaskService {
@@ -23,7 +25,15 @@ public class TaskService {
         return taskRepository.save(new TaskModel(dto, userRepository.findByEmail(token.getSubject())));
     }
 
-    public List<TaskModel> getAll(){
+    public List<TaskModel> findAll(){
         return taskRepository.findAll();
+    }
+
+    public TaskModel findById(UUID id){
+        Optional<TaskModel> task = taskRepository.findById(id);
+        if (task.isEmpty()){
+            return null;
+       }
+        return task.get();
     }
 }
