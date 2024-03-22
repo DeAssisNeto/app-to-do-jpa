@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -29,6 +30,9 @@ public class TaskModel implements Serializable {
         name = "user_id"
     )
     private UserModel user;
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean completed;
 
     public TaskModel(TaskRecordDto dto, UserDetails user){
         this.description = dto.description();
