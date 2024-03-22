@@ -6,7 +6,7 @@ import com.app.todojpa.dtos.RegisterRecordDto;
 import com.app.todojpa.models.UserModel;
 import com.app.todojpa.services.AuthorizationService;
 import com.app.todojpa.services.TokenService;
-import com.app.todojpa.utils.ApiGlobalRecordDto;
+import com.app.todojpa.utils.ApiGlobalResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,17 +31,17 @@ public class AuthenticationController {
     private AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiGlobalRecordDto> login(@RequestBody @Valid AuthenticationRecordDto dto){
+    public ResponseEntity<ApiGlobalResponseDto> login(@RequestBody @Valid AuthenticationRecordDto dto){
         var usernamePassword = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
         var auth = authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((UserModel) auth.getPrincipal());
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalRecordDto(token));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalResponseDto(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiGlobalRecordDto> register(@RequestBody @Valid RegisterRecordDto dto){
+    public ResponseEntity<ApiGlobalResponseDto> register(@RequestBody @Valid RegisterRecordDto dto){
         UserDetails userDetails = authorizationService.findByEmail(dto.email());
         if (userDetails != null){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -50,7 +50,7 @@ public class AuthenticationController {
         String encryptedPassword = new BCryptPasswordEncoder().encode(dto.password());
 
         var newUser = authorizationService.save(dto, encryptedPassword);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiGlobalRecordDto(newUser));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiGlobalResponseDto(newUser));
     }
 
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthorizationService implements UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     public UserDetails save(RegisterRecordDto dto, String password){
         return userRepository.save(new UserModel(dto, password));
     }
