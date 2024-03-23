@@ -39,4 +39,10 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalResponseDto(task));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiGlobalResponseDto> deleteTask(@PathVariable(value = "id") UUID id){
+        taskService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
