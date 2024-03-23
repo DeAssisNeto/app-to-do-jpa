@@ -5,6 +5,7 @@ import com.app.todojpa.models.TaskModel;
 import com.app.todojpa.repositories.TaskRepository;
 import com.app.todojpa.repositories.UserRepository;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +36,15 @@ public class TaskService {
             return null;
        }
         return task.get();
+    }
+
+    public TaskModel updateTask(UUID id, TaskRecordDto dto){
+        var task = taskRepository.findById(id);
+        if (task.isEmpty()){
+            return null;
+        }
+        BeanUtils.copyProperties(dto, task.get());
+        return taskRepository.save(task.get());
     }
 
     public void deleteById(UUID id){

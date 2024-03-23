@@ -39,6 +39,13 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalResponseDto(task));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiGlobalResponseDto> updateTask(@PathVariable(value = "id") UUID id,
+                                                           @RequestBody @Valid TaskRecordDto dto){
+        var updatedTask = taskService.updateTask(id, dto);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalResponseDto(updatedTask));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiGlobalResponseDto> deleteTask(@PathVariable(value = "id") UUID id){
         taskService.deleteById(id);
