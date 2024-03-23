@@ -2,8 +2,10 @@ package com.app.todojpa.services;
 
 import com.app.todojpa.dtos.TaskRecordDto;
 import com.app.todojpa.models.TaskModel;
+import com.app.todojpa.models.UserModel;
 import com.app.todojpa.repositories.TaskRepository;
 import com.app.todojpa.repositories.UserRepository;
+import com.app.todojpa.roles.TaskRole;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +28,13 @@ public class TaskService {
         return taskRepository.save(new TaskModel(dto, userRepository.findByEmail(token.getSubject())));
     }
 
-    public List<TaskModel> findAll(){
-        return taskRepository.findAll();
+    public List<TaskModel> findByCompleted(DecodedJWT token, TaskRole search){
+        var user = (UserModel) userRepository.findByEmail(token.getSubject());
+
+        if (search==null){
+            return taskRepository.findAllByUserAndCompleted(user, false);
+        }
+        return taskRepository.findAllByUserAndCompletedAndAndPriority(user,false,search);
     }
 
     public TaskModel findById(UUID id){

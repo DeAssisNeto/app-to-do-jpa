@@ -1,6 +1,7 @@
 package com.app.todojpa.controllers;
 
 import com.app.todojpa.dtos.TaskRecordDto;
+import com.app.todojpa.roles.TaskRole;
 import com.app.todojpa.services.TaskService;
 import com.app.todojpa.services.TokenService;
 import com.app.todojpa.utils.ApiGlobalResponseDto;
@@ -28,8 +29,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiGlobalResponseDto> getAllTask(){
-        var listTask = taskService.findAll();
+    public ResponseEntity<ApiGlobalResponseDto> getIcompleteTasks(@RequestHeader(name = "Authorization") String token,
+                                                                  @RequestParam(required = false) TaskRole search){
+        var listTask = taskService.findByCompleted(tokenService.decodeToken(token), search);
         return ResponseEntity.status(HttpStatus.OK).body(new ApiGlobalResponseDto(listTask));
     }
 
